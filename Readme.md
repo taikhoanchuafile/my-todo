@@ -1,17 +1,16 @@
-# 🚀 Auth System
+# 🚀 MERN Todo App – CRUD
 
 ## 📌 Giới thiệu
 
-Dự án này là ứng dụng MERN Stack cho phép người dùng thực hiện thủ công **authentication**,  
-Mục tiêu: Tìm hiểu về **authentication**- cấu trúc rõ ràng, tách service, middleware, controller đầy đủ.
+Đây là dự án MERN đầu tiên của tôi — một ứng dụng Todo List đơn giản nhưng đầy đủ tính năng CRUD và lọc dữ liệu.
 
-Dự án tập trung vào:
+Dự án được xây dựng nhằm thực hành:
 
-- Đăng ký / đăng nhập bằng email & password
-- Xác thực bằng Access Token + Refresh Token
-- Lưu refresh token an toàn bằng HttpOnly Cookie
-- Tách rõ frontend & backend theo mô hình thực tế
-- Toàn bộ logic xác thực được xây dựng thuần JWT
+- Cách xây dựng API cơ bản với Express + MongoDB
+- Cách kết nối frontend–backend
+- Validate form bằng React Hook Form + Zod
+- Quản lý state bằng Context API + useState
+- Tách component và tổ chức code rõ ràng
 
 ---
 
@@ -19,14 +18,11 @@ Dự án tập trung vào:
 
 ### **Demo**
 
-https://auth-fe-sigma.vercel.app
+https://my-todo-fe.vercel.app
 
 ### **Screenshot**
 
-![image1](./screenshots/image1.png)
-![image2](./screenshots/image2.png)
-![image3](./screenshots/image3.png)
-![image4](./screenshots/image4.png)
+![image](./screenshots/image.png)
 
 ---
 
@@ -34,73 +30,44 @@ https://auth-fe-sigma.vercel.app
 
 ### Frontend
 
-- React + TypeScript
+- React + JavaScript
+- React Hook Form (RHF) + Zod
+- React Context API (dùng để quản lý todo state)
+- Axios
 - Vite
-- Zustand (quản lý state)
-- RHF + Zod (form xác thực)
-- Axios + interceptor (refresh token)
-- React Router DOM
 
 ### Backend
 
 - Node.js + Express.js
 - MongoDB + Mongoose
-- JSON Web Token (JWT)
-- Bcrypt / Crypto (hash token)
-- Cookie HttpOnly / refresh token
+- CORS
+- REST API CRUD
 
 ---
 
-## 🧰 Công nghệ và khái niệm chính
+## ✨ Tính năng
 
-### **JWT - JSON WEB TOKEN**
+### **Công việc CRUD**
 
-- Dùng để tạo token xác thực cho người dùng sau khi đăng nhập thành công. Gồm 2 loại:
-- **Access Token:** token ngắn hạn(15-30 phút), dùng để xác thực các request đế server.
-- **Refresh Token:** token dài hạn(7-30 ngày), dùng để cấp lại access token khi hết hạn.
+- Thêm Công việc
+- Sửa Công việc
+- Xóa Công việc
+- Đánh dấu hoàn thành
 
-### **Cooki HttpOnly**
+### **Lọc dữ liệu**
 
-- Lưu refresh token an toàn trên trình duyệt, **JS không thể truy cập**, tránh rủi ro XSS.
+- Filter theo trạng thái
+- Filter theo độ ưu tiên
 
-### **Node.js + Express.js**
+### **Phân trang (Pagination)**
 
-- Backend tiếp nhận, xử lý, gửi phản hồi, cung cấp API xác thực.
+- Backend hỗ trợ page, limit
+- Trả về totalPages, currentPage
+- Frontend hiển thị nút chuyển trang, số trang
 
-### **MongoDB + Mongoose**
+### **Validate form bằng RHF + Zod**
 
-- Lưu thông tin user và refresh token.
-
----
-
-## 🔄 Quy trình Login Google
-
-**1. Đăng ký (Register)**
-
-- User nhập thông tin đăng ký: email/password/confirm password
-
-- FE xác thực validate, nếu hợp lệ, FE gửi dữ liệu lên BE
-- BE xác thực, hash password bằng bcrypt và lưu vào MONGODB, phản hổi FE
-- FE chuyển đến trang Đăng nhập(Login)
-
-**2. Đăng nhập (Login)**
-
-- User nhập email + password
-- BE xác thực, kiểm tra user tồn tại, so sánh password.
-
-Nếu hợp lệ, BE sẽ:
-
-- Tạo **access token** (ngắn hạn) gửi response về FE.
-- Tạo **refresh token** (dài hạn) lưu trong MONGODB và gửi qua cookie về FE.
-
-**3. FE sử dụng access token để gọi API**
-
-- Nếu access token hết hạn thì FE gửi request lên BE(refresh-token) để nhận về access token mới mà không cần phải đăng nhập lại.
-
-**4. Đăng xuất**
-
-- BE sẽ xóa **refress token** trong MONGODB và cookies.
-- Access token hết hạn tự động đăng xuất.
+- Kiểm tra các trường bắt buộc
 
 ---
 
@@ -109,8 +76,8 @@ Nếu hợp lệ, BE sẽ:
 ### **1. Clone project**
 
 ```bash
-git clone https://github.com/taikhoanchuafile/auth.git
-cd auth
+git https://github.com/taikhoanchuafile/my-todo.git
+cd my-todo
 ```
 
 ### **2.Backend setup**
@@ -120,27 +87,23 @@ cd backend
 npm install
 ```
 
-- Vào auth/backend tạo file **.env**
+- Vào my-todo/backend tạo file **.env**
 
-```bash
+````bash
 PORT=5001
 # port của api backend (http://localhost:PORT)
 
-MONGLEDB_API_URL=<url csdl của mongodb>
+MONGODB_CONNECTIONSTRING=<url csdl của mongodb>
 # Key URL mongodb. Vd:mongodb+srv:....@cluster0.jerdkbp.mongodb.net/devGG?appName=Cluster0
 
 FRONTEND_URL=http://localhost:5173
 #port frontend React
 
-ACCESS_TOKEN_SECRET=<key access tokeb>
-# VD:c39acd4a56d3a428767a9a5bd7f37a6b9ea40d1278401aeef (chuỗi bất kỳ)
-```
-
-- Chạy backend(/auth/backend)
+- Chạy backend(/my-todo/backend)
 
 ```base
 npm run dev
-```
+````
 
 ### **3.Setup frontend**
 
@@ -149,14 +112,14 @@ cd ../frontend
 npm install
 ```
 
-- Vào auth/frontend tạo file **.env**
+- Vào my-todo/frontend tạo file **.env**
 
 ```base
-VITE_API_BASE_URL=http://localhost:5001/api
+VITE_API_URL=http://localhost:5000
 # Nếu PORT Backend thay đổi: http://localhost:<PORT>/api
 ```
 
-- Chạy Frontend(/auth/frontend)
+- Chạy Frontend(/my-todo/frontend)
 
 ```base
 npm run dev
